@@ -5,8 +5,15 @@ class Weapon
 
     public void Fire(Player player)
     {
-        player.TakeDamage(_damage);
-        _bullets--;
+        if (_damage < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(_damage));
+        }
+        else if (_bullets > 0)
+        {
+            player.TakeDamage(_damage);
+            _bullets--;
+        }
     }
 }
 
@@ -16,6 +23,12 @@ class Player
 
     public void TakeDamage(int damage)
     {
+        if (_health <= 0)
+        {
+            _health = 0;
+            return;
+        }
+
         _health -= damage;
     }
 }
@@ -24,8 +37,5 @@ class Bot
 {
     private Weapon _weapon;
 
-    public void OnSeePlayer(Player player)
-    {
-        _weapon.Fire(player);
-    }
+    public void OnSeePlayer(Player player) => _weapon.Fire(player);
 }
